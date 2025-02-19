@@ -4,17 +4,17 @@ import altair as alt
 
 # Sample data (Player performance split into 3 parts)
 data = {
-    "Player": ["Alice", "Bob", "Charlie", "David", "Eve"],
-    "Kills": [40, 30, 50, 20, 35],   # First segment
-    "Assists": [30, 25, 35, 20, 30], # Second segment
-    "Deaths": [15, 15, 10, 20, 15]   # Third segment
+    "Player": ["Khanh", "Cong", "Tai", "Duy", "Hung"],
+    "Pure Fiction": [40, 30, 50, 20, 35],   # First segment
+    "Apocalyptic Shadow": [30, 25, 35, 20, 30], # Second segment
+    "Moc": [15, 15, 10, 20, 15]   # Third segment
 }
 
 # Convert to DataFrame
 df = pd.DataFrame(data)
 
 # Calculate total score for sorting
-df["Total Score"] = df["Kills"] + df["Assists"] + df["Deaths"]
+df["Total Score"] = df["Pure Fiction"] + df["Apocalyptic Shadow"] + df["Moc"]
 
 # Sort players by total score (highest first)
 df = df.sort_values(by="Total Score", ascending=False)
@@ -23,11 +23,11 @@ df = df.sort_values(by="Total Score", ascending=False)
 df_melted = df.melt(id_vars=["Player", "Total Score"], var_name="Category", value_name="Score")
 
 # Streamlit UI
-st.title("🏆 Game Leaderboard")
-st.write("A stacked horizontal bar chart showing performance breakdown with actual scores.")
+st.title("🏆 Honkai Star Rail Leaderboard")
+st.write("test")
 
 # Define colors for each segment
-color_scale = alt.Scale(domain=["Kills", "Assists", "Deaths"], range=["#3498db", "#2ecc71", "#e74c3c"])
+color_scale = alt.Scale(domain=["Pure Fiction", "Apocalyptic Shadow", "Moc"], range=["#3498db", "#2ecc71", "#e74c3c"])
 
 # Create the stacked horizontal bar chart with actual values
 chart = alt.Chart(df_melted).mark_bar().encode(
@@ -45,7 +45,7 @@ st.altair_chart(chart, use_container_width=True)
 
 # Simple ranking bar chart (Total Score only)
 # Simple vertical ranking bar chart (Total Score only)
-st.subheader("📊 Overall Ranking")
+st.subheader("Rolls Counting")
 
 rank_chart = alt.Chart(df).mark_bar().encode(
     y=alt.Y("Total Score:Q", title="Total Score"),
