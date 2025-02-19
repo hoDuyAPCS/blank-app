@@ -1,19 +1,44 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
+import altair as alt
 
-st.write("Streamlit supports a wide range of data visualizations, including [Plotly, Altair, and Bokeh charts](https://docs.streamlit.io/develop/api-reference/charts). 📊 And with over 20 input widgets, you can easily make your data interactive!")
+# Sample data (Player performance split into 3 parts)
+data = {
+    "Player": ["Alice", "Bob", "Charlie", "David", "Eve"],
+    "Kills": [40, 30, 50, 20, 35],   # First segment
+    "Assists": [30, 25, 35, 20, 30], # Second segment
+    "Deaths": [15, 15, 10, 20, 15]   # Third segment
+}
 
-all_users = ["Alice", "Bob", "Charly"]
-with st.container(border=True):
-    users = st.multiselect("Users", all_users, default=all_users)
-    rolling_average = st.toggle("Rolling average")
+# Convert to DataFrame
+df = pd.DataFrame(data)
 
-np.random.seed(42)
-data = pd.DataFrame(np.random.randn(20, len(users)), columns=users)
-if rolling_average:
-    data = data.rolling(7).mean().dropna()
+# Calculate total score for sorting
+df["Total Score"] = df["Kills"] + df["Assists"] + df["Deaths"]
 
-tab1, tab2 = st.tabs(["Chart", "Dataframe"])
-tab1.line_chart(data, height=250)
-tab2.dataframe(data, height=250, use_container_width=True)
+# Sort players by total score (highest first)
+df = df.sort_values(by="Total Score", ascending=False)
+
+# Convert to long format for stacked bar chart
+df_melted = df.melt(id_vars=["Player", "Total Score"], var_name="Category", value_name="Score")
+
+# Streamlit UI
+st.title("🏆 Game Leaderboard")
+st.write("A stacked horizontal bar chart showing performance breakdown with actual scores.")
+
+# Define colors for each segment
+color_scale = alt.Scale(domain=["Kills", "Assists", "Deaths"], range=["#3498db", "#2ecc71", "#e74c3c"])
+
+# Create the stacked horizontal bar chart with actual values
+chart = alt.Chart(df_melted).mark_bar().encode(
+    x=alt.X("Score:Q", title="Total Score"),
+    y=alt.Y("Player:N", sort="-x", title="Player"),
+    color=alt.Color("Category:N", scale=color_scale, title="Category"),
+    tooltip=["Player", "Category", "Score"]
+).properties(
+    width=600,
+    height=300
+)
+
+# Display the chart
+st.altair_chart(chart, use_container_width=True)
