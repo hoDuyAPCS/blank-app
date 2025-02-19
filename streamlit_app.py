@@ -42,3 +42,35 @@ chart = alt.Chart(df_melted).mark_bar().encode(
 
 # Display the chart
 st.altair_chart(chart, use_container_width=True)
+
+# Simple ranking bar chart (Total Score only)
+# Simple vertical ranking bar chart (Total Score only)
+st.subheader("📊 Overall Ranking")
+
+rank_chart = alt.Chart(df).mark_bar().encode(
+    y=alt.Y("Total Score:Q", title="Total Score"),
+    x=alt.X("Player:N", sort="-y", title="Player"),
+    color=alt.value("#3498db"),  # Keep it one color (blue)
+    tooltip=["Player", "Total Score"]
+).properties(
+    width=600,
+    height=400
+)
+
+# Display the ranking chart
+st.altair_chart(rank_chart, use_container_width=True)
+
+# Create three side-by-side text boxes
+col1, col2, col3 = st.columns(3)
+
+with col1:
+    st.text_input("Box 1", "")
+
+with col2:
+    st.text_input("Box 2", "")
+
+with col3:
+    st.text_input("Box 3", "")
+
+
+
